@@ -22,14 +22,19 @@ class _TwitterFeedState extends State<TwitterFeed> {
         ),
         drawer: NavigationDrawer(),
         body: ListView.builder(
+          padding: EdgeInsets.all(8.0),
           itemBuilder: (context, position) {
-            return Card(
-              child: Column(
-                children: [
-                  _cardHeader(),
-                  _cardBody(),
-                  _cardFooter(),
-                ],
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Card(
+                child: Column(
+                  children: [
+                    _cardHeader(),
+                    _cardBody(),
+                    _drawLine(),
+                    _cardFooter(),
+                  ],
+                ),
               ),
             );
           },
@@ -54,12 +59,24 @@ class _TwitterFeedState extends State<TwitterFeed> {
           children: [
             Row(
               children: [
-                Text('Loqman Ali'),
-                Text('@Loqman'),
+                Text('Loqman Ali',
+                    style: TextStyle(
+                      color: Colors.grey.shade900,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    )),
+                SizedBox(width: 8.0),
+                Text(
+                  '@Loqman',
+                  style: TextStyle(color: Colors.grey),
+                ),
               ],
             ),
             SizedBox(height: 8),
-            Text('Fri, 12 May 2017 * 14.30'),
+            Text(
+              'Fri, 12 May 2017 * 14.30',
+              style: TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       ],
@@ -70,7 +87,13 @@ class _TwitterFeedState extends State<TwitterFeed> {
     return Padding(
       padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
       child: Text(
-          'We also talk about the future of work as the robots advance We also talk about the future of work as the robots advance'),
+        'We also talk about the future of work as the robots advance We also talk about the future of work as the robots advance',
+        style: TextStyle(
+          color: Colors.grey.shade900,
+          fontSize: 16.0,
+          height: 1.3,
+        ),
+      ),
     );
   }
 
@@ -86,10 +109,11 @@ class _TwitterFeedState extends State<TwitterFeed> {
                 icon: Icon(
                   Icons.repeat,
                   color: Colors.orange,
+                  size: 28,
                 ),
                 onPressed: () {},
               ),
-              Text('25'),
+              Text('25', style: TextStyle(color: Colors.grey, fontSize: 16)),
             ],
           ),
           Row(
@@ -112,6 +136,14 @@ class _TwitterFeedState extends State<TwitterFeed> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _drawLine() {
+    return Container(
+      height: 1,
+      color: Colors.grey.shade200,
+      margin: EdgeInsets.only(top: 16.0),
     );
   }
 }
