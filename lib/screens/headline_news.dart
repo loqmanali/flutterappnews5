@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutterappnews5/screens/home_tabs/favourites.dart';
-import 'package:flutterappnews5/screens/home_tabs/popular.dart';
-import 'package:flutterappnews5/screens/home_tabs/whats_news.dart';
 import 'package:flutterappnews5/shared_ui/navigation_drawer.dart';
 import 'package:flutterappnews5/styles/colors.dart';
 
-class HomeScreen extends StatefulWidget {
+import 'home_tabs/favourites.dart';
+import 'home_tabs/popular.dart';
+
+class HeadLineNews extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _HeadLineNewsState createState() => _HeadLineNewsState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
+class _HeadLineNewsState extends State<HeadLineNews>
+    with TickerProviderStateMixin {
   TabController _tabController;
 
   @override
@@ -24,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Explore'),
+          title: Text('Headline News'),
           centerTitle: true,
           actions: <Widget>[
             IconButton(icon: Icon(Icons.search), onPressed: () {}),
@@ -44,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         body: Center(
             child: TabBarView(
           children: [
-            WhatsNews(),
+            Favourites(),
             Popular(),
             Favourites(),
           ],
