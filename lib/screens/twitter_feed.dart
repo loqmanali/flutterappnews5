@@ -12,7 +12,7 @@ class _TwitterFeedState extends State<TwitterFeed> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Twitter Feed'),
+          title: Text('Twitter Feeds'),
           actions: [
             IconButton(
               icon: Icon(Icons.search),
