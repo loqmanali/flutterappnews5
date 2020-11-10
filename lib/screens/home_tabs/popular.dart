@@ -4,6 +4,8 @@ import 'package:flutterappnews5/models/post.dart';
 import 'package:flutterappnews5/utilites/data_utilites.dart';
 import 'package:http/http.dart' as http;
 
+import '../single_post.dart';
+
 class Popular extends StatefulWidget {
   @override
   _PopularState createState() => _PopularState();
@@ -49,47 +51,55 @@ class _PopularState extends State<Popular> {
   Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          SizedBox(
-            child: Image(
-              image: NetworkImage(post.featureImage),
-              fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return SinglePost(post);
+          }));
+        },
+        child: Row(
+          children: [
+            SizedBox(
+              child: Image(
+                image: NetworkImage(post.featureImage),
+                fit: BoxFit.cover,
+              ),
+              width: 125,
+              height: 125,
             ),
-            width: 125,
-            height: 125,
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              children: [
-                Text(
-                  post.title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                children: [
+                  Text(
+                    post.title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                SizedBox(height: 18),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Micheal Adams',
-                      maxLines: 2,
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.timer),
-                        Text(parseHumanDateTime(post.dateWritten)),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                  SizedBox(height: 18),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Micheal Adams',
+                        maxLines: 2,
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.timer),
+                          Text(parseHumanDateTime(post.dateWritten)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

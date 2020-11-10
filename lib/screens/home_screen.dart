@@ -5,6 +5,11 @@ import 'package:flutterappnews5/screens/home_tabs/whats_news.dart';
 import 'package:flutterappnews5/shared_ui/navigation_drawer.dart';
 import 'package:flutterappnews5/styles/colors.dart';
 
+import 'pages/about.dart';
+import 'pages/contact.dart';
+import 'pages/help.dart';
+import 'pages/setting.dart';
+
 class HomeScreen extends StatefulWidget {
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -85,7 +90,34 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ];
       },
-      onSelected: (PopOutMenu menu) {},
+      onSelected: (PopOutMenu menu) {
+        switch (menu) {
+          case PopOutMenu.ABOUT:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return AboutUs();
+            }));
+            break;
+          case PopOutMenu.HELP:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return Help();
+            }));
+            break;
+          case PopOutMenu.CONTACT:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return ContactUs();
+            }));
+            break;
+          case PopOutMenu.SETTING:
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return Settings();
+            }));
+            break;
+        }
+      },
       icon: Icon(Icons.more_vert),
     );
   }
