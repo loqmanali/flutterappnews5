@@ -73,21 +73,42 @@ class _WhatsNewsState extends State<WhatsNews> {
   Widget _drawRecentUpdates() {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              bottom: 8.0,
-              top: 8.0,
-            ),
-            child: _drawSectionTitle('Recent Update'),
-          ),
-          _drawRecentUpdateCard(Colors.deepOrange),
-          _drawRecentUpdateCard(Colors.teal),
-          SizedBox(height: 48),
-        ],
+      child: FutureBuilder(
+        future: postsAPI.featchRecentUpdates(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return _connectionError();
+              break;
+            case ConnectionState.active:
+              return _loding();
+              break;
+            case ConnectionState.waiting:
+              return _loding();
+              break;
+            case ConnectionState.done:
+              if (snapshot.hasError) {
+                return _error(snapshot.error);
+              } else {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        bottom: 8.0,
+                        top: 8.0,
+                      ),
+                      child: _drawSectionTitle('Recent Update'),
+                    ),
+                    _drawRecentUpdateCard(Colors.deepOrange, snapshot.data[0]),
+                    _drawRecentUpdateCard(Colors.teal, snapshot.data[1]),
+                    SizedBox(height: 48),
+                  ],
+                );
+              }
+          }
+        },
       ),
     );
   }
@@ -230,7 +251,7 @@ class _WhatsNewsState extends State<WhatsNews> {
     );
   }
 
-  Widget _drawRecentUpdateCard(Color color) {
+  Widget _drawRecentUpdateCard(Color color, Post post) {
     return Card(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +259,7 @@ class _WhatsNewsState extends State<WhatsNews> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: ExactAssetImage('assets/placeholder_bg.png'),
+                image: NetworkImage(post.featureImage),
                 fit: BoxFit.cover,
               ),
             ),
@@ -265,7 +286,7 @@ class _WhatsNewsState extends State<WhatsNews> {
             padding:
                 EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
             child: Text(
-              'Vettel is Ferrari Number One - Hamilton',
+              post.title,
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -284,7 +305,7 @@ class _WhatsNewsState extends State<WhatsNews> {
                 ),
                 SizedBox(width: 5),
                 Text(
-                  '15 Min',
+                  _parseHumanDateTime(post.dateWritten),
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
