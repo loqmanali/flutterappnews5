@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterappnews5/api/posts_api.dart';
 import 'package:flutterappnews5/models/post.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:flutterappnews5/utilites/data_utilites.dart';
 
 class WhatsNews extends StatefulWidget {
   @override
@@ -74,21 +74,21 @@ class _WhatsNewsState extends State<WhatsNews> {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: FutureBuilder(
-        future: postsAPI.featchRecentUpdates(),
+        future: postsAPI.featchPostsByCategoryId('2'),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
-              return _connectionError();
+              return connectionError();
               break;
             case ConnectionState.active:
-              return _loding();
+              return loding();
               break;
             case ConnectionState.waiting:
-              return _loding();
+              return loding();
               break;
             case ConnectionState.done:
               if (snapshot.hasError) {
-                return _error(snapshot.error);
+                return error(snapshot.error);
               } else {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,23 +127,23 @@ class _WhatsNewsState extends State<WhatsNews> {
             padding: EdgeInsets.all(16.0),
             child: Card(
               child: FutureBuilder(
-                future: postsAPI.featchWhatsNew(),
+                future: postsAPI.featchPostsByCategoryId('1'),
                 builder: (context, AsyncSnapshot snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return _loding();
+                      return loding();
                       break;
                     case ConnectionState.active:
-                      return _loding();
+                      return loding();
                       break;
 
                     case ConnectionState.none:
-                      return _connectionError();
+                      return connectionError();
                       break;
 
                     case ConnectionState.done:
                       if (snapshot.error != null) {
-                        return _error(snapshot.error);
+                        return error(snapshot.error);
                       } else {
                         if (snapshot.hasData) {
                           List<Post> posts = snapshot.data;
@@ -161,10 +161,10 @@ class _WhatsNewsState extends State<WhatsNews> {
                               ],
                             );
                           } else {
-                            return _noData();
+                            return noData();
                           }
                         } else {
-                          return _noData();
+                          return noData();
                         }
                       }
                       break;
@@ -221,7 +221,7 @@ class _WhatsNewsState extends State<WhatsNews> {
                     Row(
                       children: [
                         Icon(Icons.timer),
-                        Text(_parseHumanDateTime(post.dateWritten)),
+                        Text(parseHumanDateTime(post.dateWritten)),
                       ],
                     ),
                   ],
@@ -232,12 +232,6 @@ class _WhatsNewsState extends State<WhatsNews> {
         ],
       ),
     );
-  }
-
-  String _parseHumanDateTime(String dateTime) {
-    Duration timeAgo = DateTime.now().difference(DateTime.parse(dateTime));
-    DateTime theDifference = DateTime.now().subtract(timeAgo);
-    return timeago.format(theDifference);
   }
 
   Widget _drawSectionTitle(String title) {
@@ -305,7 +299,7 @@ class _WhatsNewsState extends State<WhatsNews> {
                 ),
                 SizedBox(width: 5),
                 Text(
-                  _parseHumanDateTime(post.dateWritten),
+                  parseHumanDateTime(post.dateWritten),
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
@@ -316,35 +310,6 @@ class _WhatsNewsState extends State<WhatsNews> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _loding() {
-    return Container(
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  }
-
-  Widget _connectionError() {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Text('Connection Error!!!'),
-    );
-  }
-
-  Widget _error(var error) {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Text(error.toString()),
-    );
-  }
-
-  Widget _noData() {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      child: Text('No Data Available!'),
     );
   }
 }
