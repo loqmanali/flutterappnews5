@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.0
   shared_preferences:
   http:
+  timeago:
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutterappnews5/api/authors_api.dart';
 import 'package:flutterappnews5/screens/home_tabs/favourites.dart';
 import 'package:flutterappnews5/screens/home_tabs/popular.dart';
 import 'package:flutterappnews5/screens/home_tabs/whats_news.dart';
@@ -17,8 +16,6 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
 
-  AuthorsAPI authorsAPI = AuthorsAPI();
-
   @override
   void initState() {
     super.initState();
@@ -33,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    authorsAPI.fetchAllAuthors();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutterappnews5/api/posts_api.dart';
+import 'package:flutterappnews5/models/post.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class WhatsNews extends StatefulWidget {
   @override
@@ -6,6 +9,7 @@ class WhatsNews extends StatefulWidget {
 }
 
 class _WhatsNewsState extends State<WhatsNews> {
+  PostsAPI postsAPI = PostsAPI();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -14,6 +18,7 @@ class _WhatsNewsState extends State<WhatsNews> {
         children: [
           _drawHeader(),
           _drawTopStories(),
+          _drawRecentUpdates(),
         ],
       ),
     );
@@ -65,6 +70,28 @@ class _WhatsNewsState extends State<WhatsNews> {
     );
   }
 
+  Widget _drawRecentUpdates() {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              bottom: 8.0,
+              top: 8.0,
+            ),
+            child: _drawSectionTitle('Recent Update'),
+          ),
+          _drawRecentUpdateCard(Colors.deepOrange),
+          _drawRecentUpdateCard(Colors.teal),
+          SizedBox(height: 48),
+        ],
+      ),
+    );
+  }
+
   Widget _drawTopStories() {
     return Container(
       color: Colors.grey.shade100,
@@ -78,34 +105,23 @@ class _WhatsNewsState extends State<WhatsNews> {
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Card(
-              child: Column(
-                children: [
-                  _drawSingleRow(),
-                  _drawDivider(),
-                  _drawSingleRow(),
-                  _drawDivider(),
-                  _drawSingleRow(),
-                ],
+              child: FutureBuilder(
+                future: postsAPI.featchWhatsNew(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  Post post1 = snapshot.data[0];
+                  Post post2 = snapshot.data[1];
+                  Post post3 = snapshot.data[2];
+                  return Column(
+                    children: [
+                      _drawSingleRow(post1),
+                      _drawDivider(),
+                      _drawSingleRow(post2),
+                      _drawDivider(),
+                      _drawSingleRow(post3),
+                    ],
+                  );
+                },
               ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16.0,
-                    bottom: 8.0,
-                    top: 8.0,
-                  ),
-                  child: _drawSectionTitle('Recent Update'),
-                ),
-                _drawRecentUpdateCard(Colors.deepOrange),
-                _drawRecentUpdateCard(Colors.teal),
-                SizedBox(height: 48),
-              ],
             ),
           ),
         ],
@@ -121,14 +137,14 @@ class _WhatsNewsState extends State<WhatsNews> {
     );
   }
 
-  Widget _drawSingleRow() {
+  Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
           SizedBox(
-            child: Image(
-              image: ExactAssetImage('assets/placeholder_bg.png'),
+            child: Image.network(
+              post.featureImage,
               fit: BoxFit.cover,
             ),
             width: 125,
@@ -139,7 +155,7 @@ class _WhatsNewsState extends State<WhatsNews> {
             child: Column(
               children: [
                 Text(
-                  'The World Global Warming Annual Summit',
+                  post.title,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -156,7 +172,7 @@ class _WhatsNewsState extends State<WhatsNews> {
                     Row(
                       children: [
                         Icon(Icons.timer),
-                        Text('15 min'),
+                        Text(_parseHumanDateTime(post.dateWritten)),
                       ],
                     ),
                   ],
@@ -167,6 +183,12 @@ class _WhatsNewsState extends State<WhatsNews> {
         ],
       ),
     );
+  }
+
+  String _parseHumanDateTime(String dateTime) {
+    Duration timeAgo = DateTime.now().difference(DateTime.parse(dateTime));
+    DateTime theDifference = DateTime.now().subtract(timeAgo);
+    return timeago.format(theDifference);
   }
 
   Widget _drawSectionTitle(String title) {

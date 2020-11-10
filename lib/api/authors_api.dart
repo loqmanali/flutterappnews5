@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
 import 'package:flutterappnews5/models/author.dart';
 import 'package:flutterappnews5/utilites/api_utilities.dart';
 
