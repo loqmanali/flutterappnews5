@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutterappnews5/api/posts_api.dart';
 import 'package:flutterappnews5/models/post.dart';
@@ -34,39 +36,66 @@ class _WhatsNewsState extends State<WhatsNews> {
       color: Colors.white,
       fontSize: 18,
     );
-    return Container(
-      width: double.infinity,
-      height: MediaQuery.of(context).size.height * 0.25,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: ExactAssetImage('assets/placeholder_bg.png'),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Text(
-                'data'.toUpperCase(),
-                style: _headerTitle,
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: Text(
-                'data',
-                style: _headerDescription,
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return FutureBuilder(
+      future: postsAPI.featchPostsByCategoryId('1'),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return connectionError();
+            break;
+          case ConnectionState.waiting:
+            return loding();
+            break;
+          case ConnectionState.active:
+            return loding();
+            break;
+          case ConnectionState.done:
+            if (snapshot.error != null) {
+              return error(snapshot.error);
+            } else {
+              List<Post> posts = snapshot.data;
+              Random random = Random();
+              int randomIndex = random.nextInt(posts.length);
+              Post post = posts[randomIndex];
+              return Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.25,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(post.featureImage),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: Text(
+                          post.title.toUpperCase(),
+                          style: _headerTitle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: Text(
+                          post.content.substring(0, 75).trim(),
+                          style: _headerDescription,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+
+            break;
+        }
+      },
     );
   }
 
